@@ -358,7 +358,7 @@ if(!silent){ cat('Using already registered', getDoParName(), 'with', getDoParWor
          }else{NULL}),
         (if(YnN > 0){# nominal
              totake <- cbind(rep(YtO,each=n), Ws, sseq)
-             rnorm(n=n*YnO,
+             extraDistr::rcat(n=n*YnO,
                    mean=mcoutput$Rmean[totake],
                    sd=mcoutput$Rvar[totake]
                    )
