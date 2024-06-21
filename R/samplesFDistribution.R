@@ -1,10 +1,11 @@
 #' Description
 #'
 # Function description:
-#' @param Y predictand
-#' @param X: predictor
+#' @param Y 2D array. Predictand
+#' @param X: 2D array or NULL. Predictor
 #' @param mcoutput: string with path to folder containing Fdistributions.rds or
-#   the direct path to the .rds file, or an R object
+#   the direct path to the .rds file, or an Fdistributions object from
+#'  inferpopulations()
 #' @param subsamples: What does this do?
 #' @param jacobian: Boolean,What does this do?
 #' @param fn: What does this do? Can this argument name be more descriptive?
@@ -26,6 +27,10 @@ samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
   if (!silent) {
     cat('\n')
   }
+
+  ##################################################
+  #### Argument-consistency checks
+  ##################################################
 
   #### Determine the status of parallel processing
   if (is.logical(parallel) && parallel) {
@@ -66,7 +71,7 @@ samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
     `%dochains%` <- `%dopar%`
   }
 
-  ## Extract Monte Carlo output & aux-metadata
+  #### Extract Monte Carlo output and aux-metadata
 
   # If mcoutput is a string, check if it's a folder name or file name
   if (is.character(mcoutput)) {
@@ -79,18 +84,23 @@ samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
       if (file.exists(mcoutput)) {
         mcoutput <- readRDS(mcoutput, '/Fdistribution.rds')
       } else {
-        cat('Mcoutpout file ', mcoutput, 'n')
+        cat('Mcoutpout file ', mcoutput, '\n')
         stop('does not exist. Please provide either a path to a
              folder containing Fdistribution.rds, or the path to
              the .rds file with the mcoutput.')
       }
     }
   }
-  # Add check to see that mcoutput is correct type of object?
+  # Check to see that mcoutput is correct type of object
+  if (!is.list(mcoutput) || is.null(mcoutput$auxmetadata)) {
+    stop('Something is wrong with the mcoutput. Please rerun inferpopulation()')
+  }
+
+  # Extract auxmetadata and remove it from the mcoutput list
   auxmetadata <- mcoutput$auxmetadata
   mcoutput$auxmetadata <- NULL
 
-  ## Consistency checks
+  ## Consistency checks on X and Y
   if (length(dim(Y)) != 2) {
     stop('Y must have two dimensions')
   }
@@ -100,13 +110,9 @@ samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
   if (!is.null(X) && length(dim(X)) != 2) {
     stop('X must be NULL or have two dimensions')
   }
-  ##
+  # If a 0x0 matrix is supplied, set to NULL
   if (!is.null(X) && ncol(X) == 0) {
     X <- NULL
-  }
-  ## auxmetadata
-  if (is.character(auxmetadata) && file.exists(auxmetadata)) {
-    auxmetadata <- readRDS(auxmetadata)
   }
 
   ## More consistency checks
