@@ -1,5 +1,15 @@
+# Function description:
+# Y: predictand
+# X: predictor
 # mcoutput: string with path to folder containing Fdistributions.rds or
 # the direct path to the .rds file, or an R object
+# subsamples: What does this do?
+# jacobian: Boolean,What does this do?
+# fn: What does this do? Can this argument name be more descriptive?
+# combine: What does this do?
+# useOquantiles: Boolean, What does this do?
+# parallel: Boolean, enable parallel processing. Set to TRUE.
+# silent: Boolean, suppress printouts. Set to FALSE.
 samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
                                  fn = identity, combine = 'rbind',
                                  useOquantiles = TRUE, parallel = TRUE,
