@@ -1,12 +1,16 @@
 #' Description
 #'
 # Function description:
-#' @param Y 2D array. Predictand
-#' @param X: 2D array or NULL. Predictor
+#' @param Y 2D array-like. Predictand. Must have colnames with the same names as
+#'   variates from the metadata file used in inferpopulation(). Variates in Y
+#'   must not overlap with variates in X.
+#' @param X: 2D array-like or NULL. Predictor. Must have colnames with the same
+#'   names as variates from the metadata file used in inferpopulation().
+#'   Variates in Ymust not overlap with variates in X.
 #' @param mcoutput: string with path to folder containing Fdistributions.rds or
 #   the direct path to the .rds file, or an Fdistributions object from
-#'  inferpopulations()
-#' @param subsamples: What does this do?
+#'  inferpopulation()
+#' @param subsamples: Numeric or character that can be interpeted as numeric?
 #' @param jacobian: Boolean,What does this do?
 #' @param fn: What does this do? Can this argument name be more descriptive?
 #' @param combine: function or string, function that is used to process the
@@ -118,25 +122,25 @@ samplesFDistribution <- function(Y, X, mcoutput, subsamples, jacobian = TRUE,
   ## More consistency checks
   Yv <- colnames(Y)
   if (!all(Yv %in% auxmetadata$name)) {
-    stop('unknown Y variates\n')
+    stop('Unknown Y variates\n')
   }
   if (length(unique(Yv)) != length(Yv)) {
-    stop('duplicate Y variates\n')
+    stop('Duplicate Y variates\n')
   }
   ##
   Xv <- colnames(X)
   if (!all(Xv %in% auxmetadata$name)) {
-    stop('unknown X variates\n')
+    stop('Unknown X variates\n')
   }
   if (length(unique(Xv)) != length(Xv)) {
-    stop('duplicate X variates\n')
+    stop('Duplicate X variates\n')
   }
   ##
   if (length(intersect(Yv, Xv)) > 0) {
-    stop('overlap in Y and X variates\n')
+    stop('Overlap in Y and X variates\n')
   }
 
-#### Subsample and get nclusters and nsamples
+  #### Subsample and get nclusters and nsamples
   ## source('mcsubset.R')
 
   if (!missing(subsamples) &&
