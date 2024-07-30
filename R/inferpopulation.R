@@ -26,7 +26,7 @@
 #'   if string 'mcoutput', return the 'Fdistribution' object;
 #'   anything else, no output
 #' @param subsampledata Numeric: use only a subsample of the datapoints in 'data'
-#' @param niterini Number of initial (burn-in) MC iterations
+#' @param niterini Number of initial MC iterations
 #' @param miniter Minimum number of MC iterations to be done
 #' @param maxiter Maximum number of MC iterations
 #' @param ncheckpoints NULL (default), positive integer, or Inf:
@@ -558,7 +558,7 @@ inferpopulation <- function(
     Bshapelo <- 1L
     Bshapehi <- 1L
 
-    nalpha <- length(minalpha:maxalpha)
+    nalpha <- 16#length(minalpha:maxalpha)
     npoints <- nrow(data)
 
 #### Other options
@@ -639,9 +639,8 @@ inferpopulation <- function(
             nclusters = nclusters,
             npoints = npoints,
             nalpha = nalpha,
-            probalpha0 = rep(1 / nalpha, nalpha),
-            basealphas = rep((2^(minalpha - 1L #- 1L + vn$R + vn$C + vn$D + vn$L
-            )) / nclusters, nclusters)
+            probalpha0 = rep(1/nalpha, nalpha),
+            basealphas = rep(1 / nclusters, nclusters)
         ),
         if (vn$R > 0) { # continuous open domain
             list(
@@ -928,7 +927,7 @@ inferpopulation <- function(
         finitemix <- nimbleCode({
             ## Component weights
             Alpha ~ dcat(prob = probalpha0[1:nalpha])
-            alphas[1:nclusters] <- basealphas[1:nclusters] * 2^Alpha
+            alphas[1:nclusters] <- basealphas[1:nclusters] * Alpha
             W[1:nclusters] ~ ddirch(alpha = alphas[1:nclusters])
 
             ## Probability density for the parameters of the components
@@ -1032,7 +1031,7 @@ inferpopulation <- function(
 #### INITIAL-VALUE FUNCTION
         initsfn <- function() {
             Alpha <- sample(1:nalpha, 1, prob = constants$probalpha0, replace = TRUE)
-            W <- nimble::rdirch(n = 1, alpha = constants$basealphas * 2^Alpha)
+            W <- nimble::rdirch(n = 1, alpha = constants$basealphas * Alpha)
             outlist <- list(
                 Alpha = Alpha,
                 W = W,
