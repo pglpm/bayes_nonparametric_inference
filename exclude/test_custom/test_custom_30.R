@@ -41,7 +41,7 @@ currenttestdir <- inferpopulation(
     miniter = 1200,
     ## prior = TRUE,
     showKtraces = T,
-    showAlphatraces = F,
+    showAlphatraces = T,
     seed = seed
 )
 

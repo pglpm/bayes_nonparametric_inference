@@ -1792,14 +1792,14 @@ inferpopulation <- function(
                         ylim = c(0, NA))
                 }
                 if (showAlphatraces) {
-                    cat('\nSTATS log2(alpha):\n')
-                    print(summary(allmcsamplesKA$Alpha + minalpha - 1L, na.rm = TRUE))
-                    tplot(y = allmcsamplesKA$Alpha + minalpha - 1L,
-                        ylab = bquote(log2(alpha)), xlab = 'iteration',
-                        ylim = c(minalpha, maxalpha))
-                    tplot(x = (minalpha:(maxalpha + 1)) - 0.5,
+                    cat('\nSTATS alpha:\n')
+                    print(summary(allmcsamplesKA$Alpha, na.rm = TRUE))
+                    tplot(y = allmcsamplesKA$Alpha,
+                        ylab = bquote(alpha), xlab = 'iteration',
+                        ylim = c(1, nalpha))
+                    tplot(x = (1:(nalpha + 1)) - 0.5,
                         y = tabulate(allmcsamplesKA$Alpha, nbin = nalpha),
-                        type = 'h', xlab = bquote(log2(alpha)), ylab = '',
+                        type = 'h', xlab = bquote(alpha), ylab = '',
                         ylim = c(0, NA))
                 }
                 dev.off()
