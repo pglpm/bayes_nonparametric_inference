@@ -15,7 +15,7 @@ jobs:
         image: quay.io/singularity/singularity:v4.1.0
         options: --privileged
 
-    name: Build and test Package
+    name: Build and test my Package
     steps:
 
       - name: Check out code for the container builds
